@@ -59,11 +59,11 @@ vStd = 0.1;    % Simulated measurement noise on position
 % The Kalman Filter modeled uncertainties and initial values
 
 xhat = [-2 0]';
-P = eye(2)*1;
+P = eye(2)*100;
 G = eye(2);
 D = 1;
 R = diag([0.01^2 0.1^2]);
-Q = 0.1^2;
+Q = 100*(0.1^2);
 
 n = 100;
 
@@ -77,6 +77,7 @@ Xhat(:,1) = xhat;
 PP(:,1) = reshape(P,4,1);
 figure(1)
 drawnow
+
 
 for k = 1:n
     x = A * x + B * u + [wStdP*randn(1,1); wStdV*randn(1,1)];
@@ -94,7 +95,7 @@ for k = 1:n
     Xhat(:,k+1) = xhat;
     KK(:,k) = K;
     PP(:,k+1) = reshape(P,4,1);
-
+    
     clf, subplot(2,1,1), 
     plot(X(1,1:(k+1)),'r')
     hold on, 
@@ -117,10 +118,10 @@ for k = 1:n
 end
 
 E = X - Xhat;
-disp(sprintf('Standard deviation of error in position (second half): %fm', std(E(1,round(size(E,2)/2):end))))
-disp(sprintf('Standard deviation of error in velocity (second half): %fm/s', std(E(2,round(size(E,2)/2):end))))
+fprintf('Standard deviation of error in position (second half): %fm\n', std(E(1,round(size(E,2)/2):end)))
+fprintf('Standard deviation of error in velocity (second half): %fm/s\n', std(E(2,round(size(E,2)/2):end)))
 
-figure(2)
+figure(2);
 title('Estimated error covariance')
 subplot(2,1,1),
 plot(sqrt(PP(1,:)))
@@ -129,7 +130,7 @@ subplot(2,1,2),
 plot(sqrt(PP(4,:)))
 title('sqrt(P(2,2))')
 
-figure(3)
+figure(3);
 title('Kalman filter gain coefficients')
 subplot(2,1,1),
 plot(KK(1,:))
@@ -137,3 +138,10 @@ title('K(1)')
 subplot(2,1,2),
 plot(KK(2,:))
 title('K(2)')
+
+% i=["default","Process covariance reduced","Process covariance increased","Measurement covariance reduced","Measurement covariance increased","Both covariance reduced","Both covariance increased"];
+% name = ["Speed and Position", "Estimated error covariance", "Kalman filter gain coefficients"];
+% filename = name + char("_")+i(1);
+% saveas(h1,filename(1),'jpg');
+% saveas(h2,filename(2),'jpg');
+% saveas(h3,filename(3),'jpg');

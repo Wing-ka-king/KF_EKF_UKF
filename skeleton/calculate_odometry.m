@@ -16,5 +16,11 @@ if ~delta_t
     u = [0;0;0];
     return;
 end
-% FILL IN HERE
+
+w_R = (2*pi*e_R)/(E_T*delta_t);
+w_L = (2*pi*e_L)/(E_T*delta_t);
+w = (w_R*R_R - w_L*R_L)/B;
+v = (w_R*R_R + w_L*R_L)/2;
+u = [v*delta_t*cos(mu(3)) ;v*delta_t*sin(mu(3)); w*delta_t];
+
 end
